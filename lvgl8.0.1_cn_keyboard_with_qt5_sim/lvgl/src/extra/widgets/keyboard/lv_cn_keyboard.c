@@ -112,7 +112,7 @@ static const char * * en_kb_map[5] = {
     (const char * *)&default_kb_map_lc[4],
     (const char * *)&default_kb_map_uc[4],
     (const char * *)&default_kb_map_spec[4],
-    (const char * *)&default_kb_map_num[4],
+    (const char * *)default_kb_map_num,
     (const char * *)NULL,
 };
 
@@ -120,7 +120,7 @@ static const lv_btnmatrix_ctrl_t * en_kb_ctrl[5] = {
     &default_kb_ctrl_lc_map[2],
     &default_kb_ctrl_uc_map[2],
     &default_kb_ctrl_spec_map[2],
-    &default_kb_ctrl_num_map[2],
+    default_kb_ctrl_num_map,
     NULL,
 };
 
@@ -144,14 +144,14 @@ static const char * * cn_kb_map[5] = {
     (const char * *)&default_kb_map_lc[2],
     (const char * *)&default_kb_map_uc[2],
     (const char * *)&default_kb_map_spec[2],
-    (const char * *)&default_kb_map_num[2],
+    (const char * *)default_kb_map_num,
     (const char * *)NULL,
 };
 static const lv_btnmatrix_ctrl_t * cn_kb_ctrl[5] = {
     &default_kb_ctrl_lc_map[1],
     &default_kb_ctrl_uc_map[1],
     &default_kb_ctrl_spec_map[1],
-    &default_kb_ctrl_num_map[1],
+    default_kb_ctrl_num_map,
     NULL,
 };
 #endif
@@ -267,7 +267,12 @@ void lv_cn_keyboard_set_mode(lv_obj_t * obj, lv_cn_keyboard_mode_t mode)
     if(keyboard->mode == mode) return;
 
     keyboard->mode = mode;
-    lv_cn_keyboard_update_map(obj, 0);
+    if(mode == LV_CN_KEYBOARD_MODE_NUMBER){
+        lv_obj_set_style_text_font(obj, LV_FONT_DEFAULT, 0);
+        cn_ime->lang_type = 0;
+    }
+    lv_cn_keyboard_update_map(obj, cn_ime->lang_type);
+    switch_lang_type(cn_ime->lang_type);
 }
 
 /**
